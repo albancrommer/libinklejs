@@ -1,0 +1,18 @@
+const _ = require('lodash');
+libinkle = {}
+libinkle.parse = function( string ){
+    const story = JSON.parse( string )
+    return story;
+}
+libinkle.stats = function( story ){
+    story = ( typeof story == 'string' ) ? libinkle.parse(story):story;
+    stitches = story.data.stitches;
+    var stats = {
+        updatedAt: story.updated_at,
+        title: story.title,
+        stitchesCount:  _.size( stitches ),
+    };
+    return stats
+
+}
+module.exports = libinkle;
