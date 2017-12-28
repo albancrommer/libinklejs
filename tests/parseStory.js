@@ -20,9 +20,35 @@ describe('General functions', function() {
         const stats  = libinkle.stats(story);
         expect(stats).to.be.an('object')
         expect(stats.title).to.be.a('string')
+        expect(stats.initial).to.be.a('string')
        }
       )
+
 });
+describe('Agent', function() {
+
+    it('should return an agent', function(){
+        const agent = new libinkle.agent({name:"name"});
+        expect(agent).to.be.an('object')
+        expect(agent.name).to.be.a('string')
+       }
+   )
+    it('should return a story from string', function(){
+        const agent = new libinkle.agent({source:buf.toString()});
+        expect(agent.story).to.be.an('object')
+       }
+   )
+    it('should return an initial stitch', function(){
+        const agent = new libinkle.agent({source:buf.toString()});
+        expect(agent.story.stats.initial).to.be.a('string')
+
+       }
+   )
+
+
+});
+
+
 
 
 
