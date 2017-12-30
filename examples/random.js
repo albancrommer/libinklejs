@@ -7,7 +7,7 @@
 
 /* global __dirname */
 const argn = process.argv.length - 1;
-const file = process.argv[argn] ? process.argv[argn] : '8v99';
+const file = process.argv[argn] && process.argv[argn].length === 4 ? process.argv[argn] : '8v99';
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
