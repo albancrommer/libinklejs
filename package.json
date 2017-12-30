@@ -1,15 +1,21 @@
 {
   "name": "libinkle",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A light library for inkle writer stories",
-  "main": "none",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests/parseStory.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Alban Crommer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/albancrommer/libinklejs"
+  },
+  "keywords": ["games","interactive-fiction","storytelling","interactive-storytelling","interactive-plots","nonlinear"],
+  "license": "GPL-3.0",
   "dependencies": {
     "chai": "^4.1.2",
+    "keypress": "git://github.com/rahulsonwalkar/keypress#d1ea9ba1d9db5957b73cc438c80a908df23325a9",
     "lodash": "^4.17.4",
     "mocha": "^4.0.1"
   }
