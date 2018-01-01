@@ -64,8 +64,11 @@ Each stitch can be tagged. These tags can be later used as conditionals.
 # Things to do 
 
   [ ] Error management is rather inexistant
+
   [x] Flags and if conditions
+
   [ ] Sections
+
   [x] Images
 
 # Contributing, bugs, pull requests

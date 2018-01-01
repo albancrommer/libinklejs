@@ -1,6 +1,6 @@
 {
   "name": "libinkle",
-  "version": "0.0.1",
+  "version": "0.0.2f",
   "description": "A light library for inkle writer stories",
   "main": "index.js",
   "scripts": {
@@ -13,10 +13,12 @@
   },
   "keywords": ["games","interactive-fiction","storytelling","interactive-storytelling","interactive-plots","nonlinear"],
   "license": "GPL-3.0",
-  "dependencies": {
+  "devDependencies": {
     "chai": "^4.1.2",
     "keypress": "git://github.com/rahulsonwalkar/keypress#d1ea9ba1d9db5957b73cc438c80a908df23325a9",
-    "lodash": "^4.17.4",
     "mocha": "^4.0.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
   }
 }
