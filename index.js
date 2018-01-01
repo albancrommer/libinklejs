@@ -16,7 +16,8 @@ const _ = require('lodash');
  * @param {string} string   Stringified JSON object
  * @class 
  */
-var storyModel = function (string) {
+var storyModel = function (string, inkle) {
+    this.inkle = inkle;
     this.story = JSON.parse(string);
     this.stitches = this.story.data.stitches;
     /**
@@ -40,10 +41,10 @@ var storyModel = function (string) {
  */
 storyModel.prototype.getStitch = function (stitch_name) {
     if (_.has(this.story.data.stitches, stitch_name)) {
-        return new stitchModel(this.story.data.stitches[stitch_name], stitch_name);
+        return new stitchModel(this.story.data.stitches[stitch_name], stitch_name, this.inkle);
     }
-    msg = 'No stitch found for '+stitch_name;
-    throw msg ;
+    msg = 'No stitch found for ' + stitch_name;
+    throw msg;
 };
 
 /**
@@ -52,29 +53,71 @@ storyModel.prototype.getStitch = function (stitch_name) {
  * @param {object} stitch A serialized stitch to be hydrated
  * @param {string} name the ID of the stitch
  */
-var stitchModel = function (stitch, name) {
-
+var stitchModel = function (stitch, name, inkle) {
+    var flagList = inkle.flagList;
     var content = stitch.content;
     this.name = name || 'unknown';
+    this.choices = {};
+    content.forEach((value, key) => {
+        // is it a message
+        if (_.isString(value)) {
+            this.message = value;
+        }
+        // is it a divert
+        else if (_.has(value, 'divert')) {
+            this.divert = value.divert;
+        }
+        // is it an image 
+        else if (_.has(value, 'image')) {
+            this.image = value.image;
+        }
+        // is it a flag
+        else if (_.has(value, 'flagName')) {
+            flagList.push(value['flagName']);
+        }
+        // it it a choice
+        else if (_.has(value, 'linkPath')) {
+            // it should check conditions 
+            var absentFlagErrors = [];
+            var presentFlagErrors = [];
+            debugger
+            // has negate conditions 
+            if (value['notIfConditions'] && value['notIfConditions'].length > 0) {
+                value['notIfConditions'].forEach(function (flagContainer) {
+                    if (flagList.indexOf(flagContainer['notIfCondition']) !== -1) {
+                        absentFlagErrors.push(flagContainer['notIfCondition']);
+                    }
+                });
+            }
+            // has positive conditions 
+            if (value['ifConditions'] && value['ifConditions'].length > 0) {
+                value['ifConditions'].forEach(function (flagContainer) {
+                    if (flagList.indexOf(flagContainer['ifCondition']) === -1) {
+                        presentFlagErrors.push(flagContainer['ifCondition']);
+                    }
+                });
+            }
+            if (absentFlagErrors.length === 0  && presentFlagErrors.length === 0 ) {
+                this.choices[value['linkPath']] = value['option'];
+            }
+        }
+    });
     this.isFinal = function () {
         return content.length === 1;
     };
     this.isChoice = function () {
-        return content.length > 1 && !_.has(content[1], 'divert');
+        return _.keys(this.choices).length > 0;
     };
     this.nextStitch = function () {
-        return content[1]['divert'];
+        return this.divert;
     };
     this.getText = function () {
-        return content[0];
+        return this.message;
     };
     this.getChoices = function () {
-        var choicesList = [];
-        for (i = 1; i < content.length; i++) {
-            choicesList[content[i]['linkPath']] = content[i]['option'];
-        }
-        return choicesList;
+        return this.choices;
     };
+
     return this;
 };
 
@@ -86,11 +129,12 @@ var stitchModel = function (stitch, name) {
  */
 inkle = function (options) {
     _.assign(this, options);
-    var text = null;
-    var choicesList = null;
+    this.flagList = [];
+    this.paragraphList = null;
+    this.choicesList = null;
     var story = this.story || null;
     if (_.has(this, 'source')) {
-        this.story = new storyModel(this.source);
+        this.story = new storyModel(this.source, this);
     }
 };
 
@@ -101,7 +145,7 @@ inkle = function (options) {
  * @returns {nm$_libinkle.storyModel|Object.prototype.parse.story}
  */
 inkle.prototype.parse = function (string) {
-    const story = new storyModel(string);
+    const story = new storyModel(string, this);
     return story;
 };
 
@@ -137,7 +181,6 @@ inkle.prototype.start = function (stitch_name) {
  * @returns {Boolean}
  */
 inkle.prototype.getAllStitches = function (currentStitch) {
-    debugger
     var final = false;
     var choice = false;
     this.paragraphList = [];

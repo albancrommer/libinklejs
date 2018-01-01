@@ -31,6 +31,7 @@ describe('General functions', function () {
         expect(stats.initial).to.be.a('string');
     });
 });
+
 describe('Story running', function () {
 
     it('should return a story master', function () {
@@ -54,7 +55,7 @@ describe('Story running', function () {
         var paragraphList = inkle.start().getText();
         expect(paragraphList).to.be.an('array');
         var choicesList = inkle.getChoices();
-        expect(choicesList).to.be.an('array');
+        expect(choicesList).to.be.an('object');
     });
     it('should iterate through the story', function () {
         const inkle = new libinkle({source: buf.toString()});
@@ -75,5 +76,38 @@ describe('Story running', function () {
 
 
 
+describe('Images and conditions stitches', function () {
 
+    it('should work with an image story ', function () {
+        var buf2 = fs.readFileSync(path.resolve(__dirname, 'stories/5vf3.json'));
+        const inkle = new libinkle({source: buf2.toString()});
+        inkle.start();
+        const choicesList = inkle.getChoices();
+        const choice = _.keys(choicesList)[0];
+        expect(choice).to.be.an('string');
+        const success = inkle.choose(choice);
+        assert.deepEqual(_.keys(inkle.getChoices()), ['youDecideToLookA']);    
+    });
+    
+    
+
+    it('should work with positive and negative conditional story ', function () {
+        var buf2 = fs.readFileSync(path.resolve(__dirname, 'stories/f6gg.json'));
+        const inkle = new libinkle({source: buf2.toString()});
+        inkle.start();
+        inkle.choose("theMarkAIsSet");
+        inkle.choose("theFlagCIsSet");
+        assert.deepEqual(_.keys(inkle.getChoices()), ['end']);    
+    });
+    it('should work with positive and negative conditional story ', function () {
+        var buf2 = fs.readFileSync(path.resolve(__dirname, 'stories/f6gg.json'));
+        const inkle = new libinkle({source: buf2.toString()});
+        inkle.start();
+        inkle.choose("theMarkAIsSet");
+        inkle.choose("flagCNotSet");
+        assert.deepEqual(_.keys(inkle.getChoices()), ['end2']);    
+    });
+    
+    
+});
 
