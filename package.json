@@ -1,6 +1,6 @@
 {
   "name": "libinkle",
-  "version": "0.0.2f",
+  "version": "0.0.2",
   "description": "A light library for inkle writer stories",
   "main": "index.js",
   "scripts": {

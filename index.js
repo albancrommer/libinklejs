@@ -80,7 +80,6 @@ var stitchModel = function (stitch, name, inkle) {
             // it should check conditions 
             var absentFlagErrors = [];
             var presentFlagErrors = [];
-            debugger
             // has negate conditions 
             if (value['notIfConditions'] && value['notIfConditions'].length > 0) {
                 value['notIfConditions'].forEach(function (flagContainer) {
